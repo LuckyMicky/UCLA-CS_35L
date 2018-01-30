@@ -1,7 +1,0 @@
-Modify the simple ray tracer code in Brian Allen's SRT implementation so that the code is multithreaded and runs several times faster on a multicore machine, such as one of the SEASnet Linux servers.
-
-SRT is made of several components. You need to modify only the code in main.c and the Makefile in order to multithread it. Your implementation should use POSIX threads, so you'll need to include <pthread.h> and link with the -lpthread library. You'll need to modify the main function so that it does something useful with the nthreads variable that it computes from the leading digit string in the first operand of the program; currently it errors out unless nthreads is 1.
-
-Your new code should invoke pthread_create and pthread_join to create your threads, and to wait for them to finish. It need not use any other part of the POSIX threads interface; the rest of this (complicated) interface is not needed for this application. It is OK if your new code needs to allocate some additional memory via malloc or similar primitives.
-
-Benchmark and test your program with the command "make clean check"; this command should output a file 1-test.ppm that is byte-for-byte identical with the similarly-named file that is output by the unmodified SRT code, a copy of which is in the file baseline.ppm. This file is in standard Netpbm format and can be displayed as an image by GIMP and many other graphics tools.
