@@ -1,0 +1,106 @@
+2c2
+<  *  sfrobu
+---
+>  *  sfrob
+5,7d4
+< #include <sys/types.h>
+< #include <sys/stat.h>
+< 
+9d5
+< #include <unistd.h>
+10a7
+> #include <errno.h>
+13,14c10
+< 
+< static size_t numOfComp = 0;
+---
+> #define INIT_SIZE   19
+20c16
+< void checkIOErr(ssize_t ret);
+---
+> void checkIOErr(FILE* p);
+23c19
+< size_t initLinebuf(char** linebuf, char* buf, size_t size);
+---
+> void initLinebuf(char** linebuf, char* buf, size_t size);
+29,30c25
+<     char* input, * input2, ** linebuf, * line, curChar;
+<     char readbuf[2];
+---
+>     char* input, * input2, ** linebuf, curChar;
+33,34d27
+<     ssize_t ret;
+<     struct stat buf;
+37c30,31
+<     bufferSize = 0, lineNum = 0, lineSize = 0, isEOF = 0;
+---
+>     bufferSize = 0, lineNum = 0, lineSize = 0, isEOF = feof(stdin);
+>     fileSize = INIT_SIZE;
+42,46d35
+<     /* File Information */
+<     ret = fstat(STDIN_FILENO, &buf);
+<     checkIOErr(ret);
+<     fileSize = buf.st_size + 1;
+<     
+50d38
+<     line = input;
+52,53c40,42
+<     /*                                                           *
+<      * Read from Input
+---
+>     /*                                                      *
+>      *  To prevent getting a char with value EOF,           *
+>      *  We use feof(STDIN_FILENO) as the condition for the loop.   *
+57,59c46,47
+<         ret = read(STDIN_FILENO, readbuf, 1);
+<         checkIOErr(ret);
+<         curChar = readbuf[0];
+---
+>         curChar = getchar();
+>         checkIOErr(stdin);
+61c49
+<         isEOF = ! ret;
+---
+>         isEOF = feof(stdin);
+94,96c82,83
+< 
+<         /* New Line */
+<         lineNum++;
+---
+>         
+>         lineNum++;  /* New Line */
+102,103c89
+<     if (lineNum != initLinebuf(linebuf, input, bufferSize))
+<         reportErr("Wrong Line Number.");
+---
+>     initLinebuf(linebuf, input, bufferSize);
+115d100
+<     fprintf(stderr, "Comparisons: %ld\n", numOfComp);
+123c108
+<     fprintf(stderr, "%s Error\n", msg);
+---
+>     fprintf(stderr, "%s Error: %d\n", msg, errno);
+129c114
+< void checkIOErr(ssize_t ret)
+---
+> void checkIOErr(FILE* p)
+131c116
+<     if (ret < 0)      reportErr("IO");
+---
+>     if (ferror(p))      reportErr("IO");
+157d141
+<     ssize_t ret;
+160,161c144,145
+<         ret = write(STDOUT_FILENO, str, 1);
+<         checkIOErr(ret);
+---
+>         putchar(*str);
+>         checkIOErr(stdout);
+167c151
+< size_t initLinebuf(char** linebuf, char* buf, size_t size)
+---
+> void initLinebuf(char** linebuf, char* buf, size_t size)
+179d162
+<     return lineNum;
+185d167
+<     numOfComp++;

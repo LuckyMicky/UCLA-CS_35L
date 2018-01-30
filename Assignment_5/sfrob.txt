@@ -1,0 +1,107 @@
+1. Performance Comparison
+
+Compile sftobu
+$ gcc -o sfrobu sfrobu.c
+$ gcc -o sfrob sfrob.c
+
+1. $ time ./sfrobu < input_a.txt
+$ time ./sfrobu < input_a.txt
+
+real	0m4.803s
+user	0m0.360s
+sys	0m4.384s
+
+
+2. $ time ./sfrob < input_a.txt
+
+real	0m1.168s
+user	0m0.308s
+sys	0m0.035s
+
+3.
+$ chmod +x sfrobs
+$ time ./sfrobs < input_a.txt
+
+real	0m0.537s
+user	0m0.011s
+sys	0m0.072s
+
+
+As we can see, the buffered version is more than 10X faster.
+
+2. Performace Analysis of the shell version
+
+File Size: 421KB
+
+a.unbuffered version
+
+$ time ./sfrobu < input.txt > output_sfrobu 
+Comparisons: 249661
+
+real	0m5.316s
+user	0m0.347s
+sys	0m4.921s
+
+b. buffered version
+$ time ./sfrob < input.txt > output_sfrob
+
+real	0m0.332s
+user	0m0.279s
+sys	0m0.007s
+
+c. shell script version
+$ time ./sfrobs < input.txt > output_sfrobs
+
+real	0m0.082s
+user	0m0.021s
+sys	0m0.025s
+
+* File Size: 5MB
+a. Unbuffered version
+time ./sfrobu < input.txt > output_sfrobu
+Comparisons: 250289
+
+real	0m5.498s
+user	0m0.245s
+sys	0m5.184s
+
+b. Buffered version
+$ time ./sfrob < input.txt > output_sfrob
+
+real	0m0.292s
+user	0m0.213s
+sys	0m0.011s
+
+c. Shell Script version
+$ time ./sfrobs < input.txt > output_sfrobs
+
+real	0m0.099s
+user	0m0.018s
+sys	0m0.024s
+
+* File Size: 21MB
+
+a. Unbuffered version
+$ time ./sfrobu < input.txt > output_sfrobu
+Comparisons: 8837348
+
+real	0m24.083s
+user	0m1.251s
+sys	0m22.495s
+
+b. Buffered version
+$ time ./sfrob < input.txt > output_sfrob
+
+real	0m1.526s
+user	0m1.108s
+sys	0m0.043s
+
+c. Shell version
+$ time ./sfrobs < input.txt > output_sfrobs
+
+real	0m0.882s
+user	0m0.436s
+sys	0m0.136s
+
+Clearly, the shell script version outplays all the above.
+

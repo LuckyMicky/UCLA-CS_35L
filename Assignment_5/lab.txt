@@ -1,0 +1,160 @@
+Daxuan Shu
+204853061
+CS_35L Assignment_5
+lab.txt
+
+1. Write programs tr2b.c amd tr2u.c
+
+Then compiled them using :
+
+gcc -std=c99 -o tr2b tr2b.c
+gcc -std=c99 -o tr2u tr2u.c
+
+2. Obtain a large file
+
+$ head --bytes=5000000 /dev/urandom > input.txt
+
+I also write a simple c++ program to get a 5MB file.
+
+#include <iostream>
+using namespace std;
+
+int main()
+{
+  for (int i = 0; i < 5000000; i++)
+  cout << 'a';
+}
+
+Then I compiled using
+
+$ gcc output.cpp -lstdc++ -o output.o
+
+where -lstdc++ options is explicit linking to present cout in c++ library.
+
+Then making it excutable
+
+$ chmod +x output.o
+
+Then Run it and put its output into a file
+
+$ ./output.o > input_a.txt
+
+Check:
+
+ls -l
+
+-rw-r--r-- 1 daxuan eeugrad 5000000 Nov  5 13:29 input_a.txt
+
+3. Use strace to compare sys calls
+
+a. copy one file to another
+
+strace -c ./tr2b 'a' 'x' < input_a.txt > output_tr2b
+
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 70.59    0.000120           0       611           write
+ 29.41    0.000050           0       613           read
+  0.00    0.000000           0         2           open
+  0.00    0.000000           0         2           close
+  0.00    0.000000           0         4           fstat
+  0.00    0.000000           0         9           mmap
+  0.00    0.000000           0         4           mprotect
+  0.00    0.000000           0         1           munmap
+  0.00    0.000000           0         1           brk
+  0.00    0.000000           0         1         1 access
+  0.00    0.000000           0         1           execve
+  0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.000170                  1250         1 total
+
+strace -c ./tr2u 'a' 'x' < input_a.txt > output_tr2u
+
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 56.09   17.667105           4   5000000           write
+ 43.91   13.829772           3   5000002           read
+  0.00    0.000015           4         4           mprotect
+  0.00    0.000009           9         1           munmap
+  0.00    0.000000           0         2           open
+  0.00    0.000000           0         2           close
+  0.00    0.000000           0         2           fstat
+  0.00    0.000000           0         7           mmap
+  0.00    0.000000           0         1           brk
+  0.00    0.000000           0         1         1 access
+  0.00    0.000000           0         1           execve
+  0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00   31.496901              10000024         1 total
+
+
+It is obviouse that the buffered version has much fewer system calls.
+
+b. copy one file to terminal
+
+$ strace -c ./tr2b 'a' 'x' < input_a.txt
+
+xxxx...
+
+time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 89.71    0.004235           1      4883           write
+  5.76    0.000272           0       613           read
+  1.33    0.000063           7         9           mmap
+  0.93    0.000044          44         1           execve
+  0.53    0.000025          13         2           open
+  0.47    0.000022           6         4           mprotect
+  0.36    0.000017           4         4           fstat
+  0.36    0.000017          17         1         1 access
+  0.19    0.000009           9         1           munmap
+  0.17    0.000008           8         1           brk
+  0.13    0.000006           3         2           close
+  0.06    0.000003           3         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.004721                  5522         1 total
+
+strace -c ./tr2u 'a' 'x' < input_a.txt
+
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 56.61   20.320785           4   5000000           write
+ 43.39   15.575565           3   5000002           read
+  0.00    0.000000           0         2           open
+  0.00    0.000000           0         2           close
+  0.00    0.000000           0         2           fstat
+  0.00    0.000000           0         7           mmap
+  0.00    0.000000           0         4           mprotect
+  0.00    0.000000           0         1           munmap
+  0.00    0.000000           0         1           brk
+  0.00    0.000000           0         1         1 access
+  0.00    0.000000           0         1           execve
+  0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00   35.896350              10000024         1 total
+
+In this case, the buffered version also has much fewer system calls.
+I found that for buffered version, copying a file to the terminal uses much
+more system calls than simply writting to another fule.(5522/1250).
+
+For the unbuffered version, we have 5M write calls, which is expected.
+
+
+4. Test time
+
+It is obvious that the buffered version has a huge performance advantage
+due to its much fewer system calls.
+
+tr2b:
+
+$ time ./tr2b 'abc' 'xyz' < input_a.txt > output_tr2b
+
+real	0m0.405s
+user	0m0.348s
+sys	0m0.007s
+
+$ time ./tr2u 'abc' 'xyz' < input_a.txt > output_tr2u
+
+real	0m5.096s
+user	0m0.310s
+sys	0m4.740s
+

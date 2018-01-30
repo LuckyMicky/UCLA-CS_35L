@@ -1,0 +1,12 @@
+1. Performance Comparison
+
+Compile sftobu
+$ gcc -o sfrobu sfrobu.c
+
+1. $ time ./sfrobu < input_a.txt
+$ time ./sfrobu < input_a.txt
+
+real	0m4.803s
+user	0m0.360s
+sys	0m4.384s
+

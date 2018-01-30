@@ -1,0 +1,7 @@
+2017-10-31  Daxuan Shu  <daxuan@lnxsrv06.seas.ucla.edu>
+
+	* lib/timespec.h (timespec_cmp):
+	Using conditional comparation instead of subtraction to avoid interger
+	overflow. 
+	This avoids mislist -lt files whose time are far from now.
+
