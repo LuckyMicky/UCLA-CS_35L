@@ -1,0 +1,60 @@
+Daxuan Shu
+204853061
+CS_35L Fall_2017
+Assignment_6 Multithreaded performance
+log.txt
+
+1. Check version
+$ which sort
+/usr/local/cs/bin/sort
+
+$ sort --version
+sort (GNU coreutils) 8.28
+
+2. Generate a file containing 10M random single-precision floating point numbers
+
+Since every single-precision floating point numbers has 4 bytes, we need to read ar least 40MB data.
+
+od -An -t f4 -N 40000000 < /dev/urandom |
+tr -s [:blank:] '\n' |
+sed '/^$/d' > random.txt
+
+
+Then I checked the number of lines of random.txt
+
+$ wc -l random.txt
+It output
+10000000 random.txt
+Thus, this means I got 10M random single-precision floating point numbers.
+
+3. Performance Comparison
+
+a. no --parallel option
+$ time -p sort -g random.txt > /dev/null
+real 21.26
+user 109.47
+sys 0.45
+
+b. 1 thread
+$ time -p sort -g --parallel=1 random.txt > /dev/null
+real 101.66
+user 101.48
+sys 0.17
+
+c. 2 threads
+$ time -p sort -g --parallel=2 random.txt > /dev/null
+real 53.89
+user 102.38
+sys 0.29
+
+d. 4 threads
+$ time -p sort -g --parallel=4 random.txt > /dev/null
+real 31.51
+user 105.51
+sys 0.34
+
+e. 8 threads
+$ time -p sort -g --parallel=8 random.txt > /dev/null
+real 20.10
+user 108.85
+sys 0.44
