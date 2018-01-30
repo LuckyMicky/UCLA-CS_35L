@@ -1,0 +1,269 @@
+1. Set up BeagleBone
+
+I used the my own Mac to connect with the BeagleBone board.
+
+
+2. Find BEAGLEBONE as an external storage device and open it.
+
+3. Double-click on the "START.htm" file.
+This will open a webpage located on the BeagleBone to show you how to setup your
+board step-by-step.It will highlight the completed steps as green.
+
+At first, only the step "Plug in BeagleBone via USB" already highlighted as green.
+
+4. Install the two drivers for Mac and restart.
+
+After restarting my Mac, the second step is still red.
+And then I searched the piazza to find the reason.
+REASON:
+"Versions of Mac OS X 10.11 and newer have a rewritten USB stack that is
+substantially less compatible than that in 10.10 and below. Unfortunately, Apple
+have not published any documentation for the new-style USB interfaces exposed in
+10.11, so HoRNDIS can only use the USB APIs available in 10.10 and below, which
+have been broken in newer versions of OS X. As such, newer versions of OS X may
+have difficulty connecting to certain devices."
+
+SOLUTION:
+
+Download the patch from
+http://disq.us/url?url=http%3A%2F%2Fnyus.joshuawise.com%2FHoRNDIS-rel8pre2-dbg.pkg%3AnWVXptevoA9QSEAQQXuPQfiJ240&cuid=1845838
+
+Applying the patch file and restart
+
+Now the second step is green.
+
+
+5. SSH into my BeagleBone.
+
+Opem my terminal:
+
+sudo ssh -Y root@192.168.7.2
+
+Note: the -Y option is very important for this lab. Since without -Y, we can not excute the applications like firefox.
+
+6. Connect BeagleBone to wifi.
+
+a. Start the connmanctl terminal:
+
+root@beaglebone:~# sudo connmanctl
+
+b. Turn on the wifi for your BeagleBone:
+
+connmanctl> enable wifi
+
+Output:
+
+Error wifi: Already enabled
+
+c. Scan all available wifi access points:
+
+connmanctl> scan wifi
+
+Output:
+
+Scan completed for wifi
+
+d. List all the discovered access points:
+
+connmanctl> services
+
+
+Output is a list of access point which have the following format:
+
+*AO CR3760-wifi          wifi_2cf7f10669f8_4352333736302d77696669_managed_psk
+    CSD                  wifi_2cf7f10669f8_435344_managed_none
+    CSD-Auth             wifi_2cf7f10669f8_4353442d41757468_managed_none
+    CSD-Guest            wifi_2cf7f10669f8_4353442d4775657374_managed_none
+    BeagleBone051129     wifi_2cf7f10669f8_426561676c65426f6e65303531313239_managed_none
+    eduroam              wifi_2cf7f10669f8_656475726f616d_managed_ieee8021x
+    UCLA_WIFI            wifi_2cf7f10669f8_55434c415f57494649_managed_none
+    UCLA_WEB             wifi_2cf7f10669f8_55434c415f574542_managed_none
+e. Register as the prospective client:
+
+connmanctl> agent on
+
+Output:
+
+Agent registered
+
+f. Connect to the wifi provided in the Boelter 3760 classroom
+
+connmanctl> connect wifi_2cf7f10669f8_4352333736302d77696669_managed_psk
+
+Output:
+
+connected
+
+g. close the the application connmanctl:
+
+connmanctl> quit
+
+7. Update the database of apt-get:
+
+root@beaglebone:~# sudo apt-get update
+
+8. Install xauth tool for X11 forwarding support for future SSH connections to your BeagleBone:
+
+root@beaglebone:~# sudo apt-get install xauth
+
+9. Install Firefox on your BeagleBone:
+
+root@beaglebone:~# apt-get install firefox-esr-l10n-en-gb
+
+10. Try to open firefox on my own Mac first:
+
+root@beaglebone:~# firefox
+
+It opened the firefox after outputing a few errors and waiting for about 30 seconds.
+
+11. Now I am going to do the Client Step with my Partner Changyu Yan, who opearated a server.
+
+a. Generate public and private keys
+
+root@beaglebone:~# ssh-keygen
+
+Output:
+
+Generating public/private rsa key pair.
+Enter file in which to save the key (/root/.ssh/id_rsa): 
+Created directory '/root/.ssh'.
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /root/.ssh/id_rsa.
+Your public key has been saved in /root/.ssh/id_rsa.pub.
+The key fingerprint is:
+b1:d0:8b:d5:60:1e:b0:29:42:ca:0a:2f:99:d7:38:8f root@beaglebone
+The key's randomart image is:
++---[RSA 2048]----+
+|  .   ..+        |
+|.o     * +       |
+|o.. . + = .      |
+|o+ + . + +       |
+|= = . . S        |
+| o +             |
+|  E .            |
+|                 |
+|                 |
++-----------------+
+
+b. Check the ip address (Only for the server), but I, as a client, also did it:
+
+root@beaglebone:~# ifconfig
+
+
+Output:
+
+SoftAp0   Link encap:Ethernet  HWaddr c8:fd:19:f6:e9:c4  
+          inet addr:192.168.8.1  Bcast:192.168.8.255  Mask:255.255.255.0
+          inet6 addr: fe80::cafd:19ff:fef6:e9c4/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:28 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:0 (0.0 B)  TX bytes:7337 (7.1 KiB)
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65x536  Metric:1
+          RX packets:358 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:358 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1 
+          RX bytes:28696 (28.0 KiB)  TX bytes:28696 (28.0 KiB)
+
+usb0      Link encap:Ethernet  HWaddr c8:fd:19:f6:e9:c0  
+          inet addr:192.168.7.2  Bcast:192.168.7.255  Mask:255.255.255.0
+          inet6 addr: fe80::cafd:19ff:fef6:e9c0/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:1934 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:1965 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:163459 (159.6 KiB)  TX bytes:2246107 (2.1 MiB)
+
+wlan0     Link encap:Ethernet  HWaddr 2c:f7:f1:06:69:f8  
+	  inet addr:172.31.117.75  Bcast:172.31.119.255  Mask:255.255.252.0
+          inet6 addr: fe80::2ef7:f1ff:fe06:69f8/64 Scope:Link
+	  UP BROADCAST MULTICAST DYNAMIC  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+
+Note:
+The IP address is located under the network interface "wlan0" and labeled as "inet addr"
+For example, my IP address is 172.31.117.75
+
+My partner's IP address is 10.97.85.224
+
+c. Copy my public key to the server for key-based authentication
+
+root@beaglebone:~# ssh-copy-id -i daxuan@10.97.85.224
+
+Output:
+
+The authenticity of host '10.97.85.224 (10.97.85.224)' can't be established.
+ECDSA key fingerprint is 4d:f2:42:2c:c9:9d:4d:c0:fe:f0:f4:81:b5:19:9c:41.
+Are you sure you want to continue connecting (yes/no)? yes
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+Debian GNU/Linux 8
+
+BeagleBoard.org Debian Image 2016-06-14
+
+Support/FAQ: http://elinux.org/Beagleboard:BeagleBoneBlack_Debian
+
+default username:password is [debian:temppwd]
+
+daxuan@10.97.85.224's password:
+
+Then I input my password: 1234, which set in my partner's Mac(Server)
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh 'daxuan@10.97.85.224'"
+and check to make sure that only the key(s) you wanted were added.
+
+d. Add private key to authentication agent (ssh-agent)
+
+$ ssh-add
+
+e. SSH to server:
+
+root@beaglebone:~# ssh -Y daxuan@10.97.85.224
+
+Output:
+Debian GNU/Linux 8
+
+BeagleBoard.org Debian Image 2016-06-14
+
+Support/FAQ: http://elinux.org/Beagleboard:BeagleBoneBlack_Debian
+
+default username:password is [debian:temppwd]
+
+Enter passphrase for key '/root/.ssh/id_rsa':
+
+(Then I enter the passphrase for key I set on my own laptop)
+
+Note: the "-Y" option is crutial here. Without it, it will not work for openning firefox on my server.
+
+12. Now I am going tp try to run a command on the remote host
+
+$ firefox
+
+Output:
+
+firefox-esr:5327): GLib-GObject-CRITICAL **: g_object_ref: assertion 'object->ref_count > 0' failed
+
+(firefox-esr:5327): GLib-GObject-CRITICAL **: g_object_unref: assertion 'object->ref_count > 0' failed
+
+(firefox-esr:5327): GLib-GObject-CRITICAL **: g_object_ref: assertion 'object->ref_count > 0' failed
+
+(firefox-esr:5327): GLib-GObject-CRITICAL **: g_object_unref: assertion 'object->ref_count > 0' failed
+^C[Child 5373] ###!!! ABORT: Aborting on channel error.: file /build/firefox-esr-UpRacR/firefox-esr-52.5.0esr/ipc/glue/MessageChannel.cpp, line 2152
+[Child 5373] ###!!! ABORT: Aborting on channel error.: file /build/firefox-esr-UpRacR/firefox-esr-52.5.0esr/ipc/glue/MessageChannel.cpp, line 2152
+
+Then, after waiting for about 30 seconds, I can see the firefox is opened on my Laptop. It works!
+
+Note: If not using -Y option to either SSH the BeagleBoard or the server, it will output:
+Error: GDK_BACKEND does not match available displays.

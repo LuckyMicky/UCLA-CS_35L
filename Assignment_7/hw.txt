@@ -1,0 +1,28 @@
+Daxuan Shu
+204853061
+Lab 7, hw.txt
+
+1.
+According to the public-key cryptosystem, the resulting network is still secure.
+Sicne other teams have not the private key and they can not enter our host and
+decrypt any message.
+Meanwhile, it is computationally infeasible to find out the private key
+given the public key. Thus, the network is secure.
+
+(1) Althoufh the other teams had also tapped on our keyboards and had all the
+keystrokes, the network is still secure. Since they can not find out what our
+private key is even though we share the same passphrass. The generated private
+key is going to be different.
+
+(2) Depends. If the private key is stored in the USB, them it is not sercure.
+Otherwise, it is secure.
+
+2.
+Since “gpg --verify” can only compare the cleartext signature decrypted by
+using a public key. The problem will occur when someone stealthy substitute
+the original owner's public key to his own public key. Therefore, in this way,
+we can not verify if the file is personally created by its real owner.
+A solution to such a proble which is widely used nowadays is to trust in well
+organized third party company/organization that keeps a track of the origin
+point of the file with its author. As loog as we trust in this third party
+organization, the verification will always be correct.
