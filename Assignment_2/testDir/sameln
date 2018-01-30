@@ -1,0 +1,66 @@
+#!/bin/bash
+
+	dir=$1       #store the first input argument into dir
+	
+	All_files=`ls -a $dir | sort` # sort all files in the current direc-
+	                                # tory and store into a list called 
+	                                # All_files
+	Dot_files=`ls -a $dir | grep '^\.' | sort`
+	
+	declare -a Reg_file
+	let count=0
+
+	restore="$IFS"
+	IFS=$'\n'
+
+for d_file in $Dot_files
+	do 
+	  if [ ! -r "$dir/$d_file" ] # if permission is not granted
+	   then
+              echo "Do not have permission to read the file $d_file"
+	      continue
+	   fi
+          
+	  if [ ! -L "$dir/$d_file" ] # if current file is not a regular file
+ 	   then
+	       continue # silently ignore all files other than regular file
+	   elif [ ! -f "$dir/$d_file" ]
+	   then
+	      Reg_file[count]="$dir/$d_file"
+	      let count=count+1
+           fi
+	done
+
+for a_file in $All_files
+	do 
+	  if [ ! -r "$dir/$a_file" ] # if permission is not granted
+	   then
+              echo "Do not have permission to read the file $a_file"
+	      continue
+	   fi
+          
+	  if [ ! -L "$dir/$a_file" ] # if current file is not a regular file
+	   then
+	       continue # silently ignore all files other than regular file
+	   elif [ ! -f "$dir/$d_file" ]
+           then
+	      Reg_file[count]="$dir/$a_file"
+	      let count=count+1
+           fi
+	done
+
+	for (( i=0; i<$count; i++ ))
+	  do
+	    for (( j=i+1; j < $count; j++ ))
+	    do
+		cmp -s "${Reg_file[$i]}" "${Reg_file[$j]}"
+		if [$? -eq 0]
+		then
+		    ln -fp "${Reg_file[$i]}" "${Reg_file[$j]}"
+		    Reg_file[$j]=Reg_file[$i]
+		fi
+            done		
+
+	  done
+	   
+IFS=$restore

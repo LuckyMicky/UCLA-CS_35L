@@ -1,0 +1,49 @@
+#!/bin/sh
+
+#sort directory lexicographically
+RESULT=`ls -a $1 | sort`
+declare -a ARRAY
+let i=0
+for FILE in $RESULT
+    do
+    if [ ! -r "$1/$FILE" ]
+	then
+	    echo "Error in reading file"
+	    elif [ -f "$1/$FILE" ]
+	then
+	ARRAY[$i]="$1/$FILE"
+	let i=i+1
+	fi
+    done
+
+for F1 in "${ARRAY[@]}"
+do
+    for F2 in "${ARRAY[@]}"
+    do
+	#var and temp hold the inode number of F1 and F2
+	let var=`stat -c '%i' $F1`
+	let temp=`stat -c '%i' $F2`
+	#If filenames are different and inodes are different
+	#This is done to check if one file is already not the hardlink of another
+	if [ $F1 != $F2 ]  && [ $var != $temp ]
+	       then
+	           cmp -s $F1 $F2
+		          let t=$?
+			         #If files are same
+			         if [ $t == 0 ]
+				            then
+				        #For debugging:
+				        #echo "$F2 will be removed"
+				        rm $F2
+					   ln $F1 $F2
+					          elif [ $t == 1 ]
+				            then
+				        continue
+					  #echo "$F1 and $F2 are different"
+					       elif [ $t -gt 1 ]
+				            then
+				        echo "Error"
+					       fi
+				 fi
+    done
+done

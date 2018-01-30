@@ -1,0 +1,50 @@
+sed
+
+1 filtering lines by line numbers
+2 filtering lines by content
+3 removing/replacing text within line
+
+1
+cat books.txt | sed ‘’
+sed -n ‘’
+sed ‘2,4d’
+sed -n ‘2,4p’
+
+2
+sed ‘/Paulo/d’
+sed -n ‘/Paulo/p’ == grep Paulo
+
+3 
+sed ’s/R/S’
+sed ’s/R/S/g’
+sed ’s/r/S/gi’
+sed ‘2,4 s/r/S/gi’ 
+
+
+regex
+
+1. 
+cat regex.txt | sed -n ‘/aa/p’
+
+2. anchors:
+sed -nr ‘/^aa/p’
+sed -nr ‘/^aa$/p’
+
+3. quantifiers:
+sed -nr ‘/^aa?$/p’
+sed -nr ‘/^aa+$/p’
+sed -nr ‘/^aab?$/p’
+sed -nr ‘/^aab*$/p’
+
+4. grouping
+sed -nr ‘/^(aa|bb)$/p’
+
+5. character classes
+sed -nr ‘/^[abcdef]$/p’
+sed -nr ‘/^[bcdef]$/p’
+sed -nr ‘/^[a-f]?$/p’
+
+sed -nr ‘/^[:alpha:]$/p’
+sed -nr '/^[ab]{2,3}$/p'
+sed -nr ‘/^[^b]{2,3}$/p'
+ 

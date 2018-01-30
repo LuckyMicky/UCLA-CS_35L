@@ -1,0 +1,186 @@
+CS_35L Fall 2017
+Assignment 2
+Daxuan
+UID: 205853061
+
+Go into the standard C or POSIX locale:
+$ export LC_ALL='C'
+check the results
+$ locale
+Output:
+LANG=en_US.UTF-8
+LC_CTYPE="C"
+LC_NUMERIC="C"
+LC_TIME="C"
+LC_COLLATE="C"
+LC_MONETARY="C"
+LC_MESSAGES="C"
+LC_PAPER="C"
+LC_NAME="C"
+LC_ADDRESS="C"
+LC_TELEPHONE="C"
+LC_MEASUREMENT="C"
+LC_IDENTIFICATION="C"
+LC_ALL=C
+
+It works.
+
+Then I created the sorted file named "words" in my working directory.
+$ sort /usr/share/dict/words > words
+
+Then I created the text file containing the HTML in this assignment's web page.
+$ wget http://web.cs.ucla.edu/classes/fall17/cs35L/assign/assign2.html
+
+Run the commands with the HTML assign2.html file being standard input:
+(In order to observe the output, I put the output into a file named test.txt)
+
+Before running the commands, I firstly read the man page of tr.
+I know that -c means complement and -s means squeeze-repeats.
+
+$ tr -c 'A-Za-z' '[\n*]' <assign2.html > test.txt
+
+This command change all the characters other than 'A-Za-z' into a newline.
+Notice that the space before the public is TAB, which counts as one character.
+
+-----------------------------------------------------------------------
+
+$ tr -cs 'A-Za-z' '[\n*]' < assign2.html >test.txt
+
+This command squeeze the mutiple new lines into just one new lines.
+
+-----------------------------------------------------------------------
+Before running the command, I read the man page of sort, which sort lines of 
+text files.
+
+$ tr -cs 'A-Za-z' '[\n*]'< assign2.html | sort
+
+sort lines of the output files generated from last command.
+It looks like
+
+a
+a
+.
+.
+.
+.
+a
+A
+A
+.
+.
+A
+able
+about
+.
+.
+.
+
+-----------------------------------------------------------------------
+Before running the command, I read the man page of sort, I knew -u means unique
+
+$ tr -cs 'A-Za-z' '[\n*]'< assign2.html | sort -u
+
+remove the repeated lines in the last sorted file.
+It looks like:
+
+a
+A
+able
+about
+.
+.
+.
+
+With a single 'a' instead of multiple 'a'.
+' 
+
+-----------------------------------------------------------------------
+Before running the command, I read the man page of comm, which compares sorted
+files FILE1 and FILE 2 line by line.
+
+with no options, produce three-column output. Column one contains lines unique
+to FILE1, column two contains lines unique to FILE2, and column three contains
+lines common to both files.
+
+$ tr -cs 'A-Za-z' '[\n*]' | sort -u < assign2.html | comm - words
+
+The output has three column. Column 1 contains lines unique to sorted 
+assign2.html and column 2 contains lines unique to words file. Column 3 
+contains lines common to both files.
+
+-----------------------------------------------------------------------
+
+$ tr -cs 'A-Za-z' '[\n*]' < assign2.html | sort -u | comm -23 - words 
+
+option "-23" means suppress column 2 and 3.
+
+The output only has column 1 which contains lines unique to sorted assign2.html
+
+-----------------------------------------------------------------------
+
+Using wget to obtain the copy of the Hawaiian web page
+
+$ wget http://mauimapp.com/moolelo/hwnwdseng.htm
+
+Look what do the contents look like
+
+$ emacs hwnwdseng.htm
+
+----------------------------------------------------
+Buildwords Script
+
+#!/bin/bash
+
+sed '1,27d' |
+
+sed '/<\/tr>/d' |
+
+sed '731,747d' |
+
+tr -d '[:blank:]' |
+
+sed '/<tr>/d' |
+
+sed '/<br>/d' |
+
+sed 's/<[^>]*>//g' |
+
+sed '/^$/d' |  
+
+sed '1~2d' |
+
+tr [:upper:] [:lower:] |
+
+sed s/\`/\'/g |
+
+sed 's/\,/\n/g' |
+ 
+tr -c '[^pk'mnwlhaeiou]' '?'
+-----------------------------------------------------
+
+Check the misspelled Hawaiian words:
+
+$ cat assign2.html | tr -cs "pk'mnwlhaeiou" '[\n*]' | 
+tr '[:upper:]' '[:lower:]'| sort -u | comm -23 - hwords > misHawaiian
+
+$ wc -w misHawaiian
+Output:
+204 misHawaiian
+
+Thus, there are 204 misspelling of Hawaiian words.
+
+Check the misspelled English words:
+
+$ cat assign2.html | tr -cs 'A-Za-z' '[\n*]' | 
+tr '[:upper:]' '[:lower:]' | sort -u | comm -23 - words > misEnglish
+
+$ wc -w misEnglish
+Output:
+38 misEnglish
+
+Thus, there are 38 misspelling of Hawaiian.
+-------------------------------------------------------------
+
+Misspelled as English but not as Hawaiian:
+
+Misspelled as Hawaiian but not as English:
