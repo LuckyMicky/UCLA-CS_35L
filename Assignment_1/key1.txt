@@ -1,0 +1,210 @@
+CS_35L Assignment_1 key1.txt
+Daxuan Shu
+204853061
+Oct 3,2017
+
+Exercise 1.1
+1. 
+$ emacs exer1.html
+
+2.
+C-s P U B L I C ENTER
+
+3.
+C-s L a b o r a t o r y ENTER M-b
+
+4.
+C-s s e l f - r e f e r e n t i a l ENTER M-b M-b
+
+5.
+C-s a r r o w ENTER M-b
+
+6.
+C-e
+
+7.
+C-a
+
+8.
+Shown as above.
+
+9.
+I did not use arrow keys.
+
+10.
+C-x C-c 
+
+--------------------------------------------------
+Exercise 1.2
+1.
+$ emacs exer2.html
+
+2.
+C-s < ! - - ENTER C-a C-k 
+
+3.
+C-s D E L ENTER C-a C-k
+
+4.
+C-s h t t p : / / e n . w i k i ENTER C-s C-a C-p C-Space down down down C-w
+
+5.
+C-s < ! - - ENTER < < < < C-Space > > > > > > > > C-w
+C-s < ! - ENTER C-a C-k
+
+--------------------------------------------------
+Exercise 1.3
+1.
+$ emacs exer3.html
+
+2.
+C-s A s s ENTER M-f > > DEL 3 7
+C-s A s s ENTER M-f > > DEL 3 7
+
+3.
+M-< C-s U T F - 8 ENTER DELETE 3 7
+
+4.
+M-< C-s < / o l > ENTER C-a ENTER
+
+5.
+C-x C-c
+
+--------------------------------------------------
+Exercise 1.4
+1.
+$ cat exer2.html exer2.diff >exer4.html
+
+2.
+4 emacs exer4.html
+
+3.
+M-> C-r < ! - ENTER C-Space C-e M-w M-g g 352 C-y M->
+
+4.
+C-r < ! - ENTER C-r C-Space Right Right Right Right Right Right Right M-w M-g 
+g 3 3 7 ENTER C-e Left Left Left Left Left Left C-y M->
+
+C-r < ! - ENTER C-r C-r C-Space C-e M-w M-g g 3 0 0 ENTER C-y C-S < ! - C-s C-s
+C-s DOWN C-Space C-e M-w M-g g 301 ENTER ENTER UP C-y M-> C-r < ! - C-r C-r 
+ENTER DOWN DOWN C-Space C-e M-w M-g g 302 ENTER ENTER UP C-y M->
+
+C-r < ! - C-r C-r C-r ENTER C-Space C-e M-w M-g g 9 0 ENTER C-y M->
+
+C-r < ! - C-r C-r C-r C-r ENTER C-Spce C-e M-w M-g g 1 5 ENTER C-y M->
+
+5.
+C-r < ! - C-r C-r C-r C-r C-r ENTER DOWN C-Space M-> DELETE 
+
+6. 
+C-x u
+
+7.
+C-r < ! - C-r C-r C-r C-r C-r ENTER DOWN < ! - - C-S - - > ENTER Delete Delete
+Delete C-s - - > ENTER Delete Delete Delete C-s - - > ENTER Delete Delete 
+Delete C-s - - > ENTER Delete Delete Delete
+C-s - - > ENTER Delete Delete Delete
+M-> - - >
+
+8.
+I found 7 instances
+M-< M-% < o l > ENTER < O L > ENTER y y y y y y y
+
+9.
+$ diff -u exer1.html exer4.html >exer4.diff
+$ emacs exer4.diff
+
+It works!
+
+-------------------------------------------------------
+Exercise 1.5
+
+1.
+$ emacs
+M-x m k d i r Enter
+junk Enter
+
+2.
+M-x c d Enter 
+j u n k Enter
+C-x C-f h e l l o . c Enter
+copy and paste the code
+C-x C-s
+
+3.
+M-x c o m p i l e Enter
+Delete Delete Delete Delete Delete Delete Delete Delete
+g c c Space - o Space h e l l o Space h e l l o . c Enter
+
+4.
+M-x c o m p i l e Enter
+./ h e l l o Enter
+C-x 0 Enter
+C-x C-w h e l l o - o u t Enter
+
+5.
+C-x i 
+A few Delete to delete the default path
+junk/hello-out Enter
+
+-*- mode: compilation; default-directory: "~/junk/" -*-
+Compilation started at Sat Oct  7 21:05:30
+
+./hello
+#include <stdio.h>
+int
+main (void)
+{
+  char n = '\n';
+  char b = '\\';
+  char q = '"';
+  char const *p = "#include <stdio.h>%cint%cmain (void)%c{%c  char n = '%cn';%c  char b = '%c%c';%c  char q = '%c';%c  char const *p = %c%s%c;%c  printf (p, n, n, n, n, b, n, b, b, n, q, n, q, p, q, n, n, n, n);%c  return 0;%c}%c";
+  printf (p, n, n, n, n, b, n, b, b, n, q, n, q, p, q, n, n, n, n);
+  return 0;
+}
+
+Compilation finished at Sat Oct  7 21:05:30
+
+-------------------------------------------------------------
+
+Exercise 1.6
+
+1. 
+$ emacs
+C-x b Enter
+
+2.
+( r a n d o m ) C-j
+
+3.
+(setq x (random 100)) C-j
+
+(setq y (random 100)) C-j
+
+4.
+(* x y) C-j
+2835
+x * y = 45 * 63 = 2835
+It is correct.
+
+I tried a few times and it is always correct.
+
+5.
+M-: (* x y) C-j
+I got the same result 2935
+
+6. 
+They are not truly in the mathematical sense. Because the computer must use 
+some algorithm to generate the random number, it is actually a pseudorandom.
+
+7.
+Since computer representations use a limited number of bits to encode a number,
+and hence some operations can overflow when the results are too large  to be 
+represented.
+Assuming the linux serve using 32 bits, then the max integer it can represent 
+accurately is 2^32-1. I tried to get the limit of lisp (random) function could
+generate on lnxsrv. However, I did not find it. If I know the limit, for exampl
+e, the range is x. Then the possiblity is (2^64-2^33+11) / x.
+
+
+

@@ -1,0 +1,236 @@
+CS_35L Assignment_1 ans1.txt
+Daxuan Shu
+UID: 204853061
+Oct 3, 2017
+
+1.
+Ans: 
+$ man -k "specific word" 
+
+Explanation:
+I firstly read the man page for man. Then I searched the word "print" in the ma
+n page of man. I saw there is an example "man -k printf" with description "Sear
+ch the short descriptions and manual page names for the keyword printf as regul
+ar expression.  Print out any matches."
+
+Explanation Command:
+$ man man
+/print 
+
+2. 
+Method I
+
+Ans:
+$ whereis -b cp
+Output: 
+cp: /usr/bin/cp
+
+$ whereis -b wc
+Output:
+wc: /usr/bin/wc
+ 
+Explanation:
+Since we only need to locate programs instead of manuals and sources, I used -b
+option of whereis to search only for binaries.
+
+Explanation Command:
+$ man whereis
+
+Method II
+
+Ans:
+$ which cp
+Output:
+/usr/bin/cp
+
+$ which wc
+Output:
+/usr/bin/wc
+
+Explanation:
+Based on my TA's hints for assignment 1, I looked the man page of which. 
+which - shows the full path of (shell) commands.
+
+Explanation Command: 
+$ man which
+
+3.
+Ans:
+w - Show who is logged on and what they are doing
+X - a symbolic link to the command X.org
+[ - Evaluate Conditional Expression
+
+Explanation:
+Since all the executable programs are in the path /usr/bin, I used find command to search all executable programs that have one character long in that path.
+Explanation Command:
+$ find /usr/bin -executable -name ?
+Output:
+/usr/bin/X
+/usr/bin/w
+/usr/bin/[
+$ man X
+
+4. 
+Method I
+Ans: /etc/alternatives/emacs
+
+Explanation:
+I simply went into the path /usr/bin. Then I used a long listing format to get 
+the actual file that it points to
+
+Explanation Command:
+$ cd /usr/bin
+$ ls -l
+
+Method II
+Ans: /etc/alternatives/emacs
+
+Explanation:
+Use man -k symbolic to print all the commands that have some relation with symb
+olic link. Then I looked through the output and got an useful command "readlink
+". Then I got the details of readlink by looking its man page.
+
+Explanation Command:
+$ man -k symbolic
+$ man readlink
+$ readlink /usr/bin/emacs
+
+5. 
+g+s: add setting user or group ID on execution to group users.  
+o-x: remove execute (or search for directories) for other users.
+
+6.
+Ans:
+find -mtime -20
+
+Explanation:
+Open the man page and then search the keyword "modif". Look through the results one by one and finally find the answer.
+
+Explanation Command:
+$ man find
+/modif
+ 
+7.
+Ans:
+$ find / -type d -mtime	-20
+
+Explanation: Using man find to get the option -type and search for directoy in 
+the root director, which is /
+
+Explanation Command:
+$ man find
+$ find / -type d -mtime -20
+
+8. 
+Ans:
+There are 271 symbolic links in the same directory as find.
+
+Explanation:
+I firstly found the directory of find. Then after lokking the man page of the f
+ind command and searching the word "symbolic" in the man page to get the proper
+options. Then use the option I had found to output all symbolic links into a fi
+le I had created. Finally, use the command "wc" to count the number of symbolic links.
+
+Explanation Command:
+$ which find
+Output: /usr/bin/find
+$ man find
+$ find /usr/bin/ -type l > temp.txt
+$ man wc
+$ wc -l temp.txt
+Output: 271 temp.txt
+
+Thus, there are 271 lines in temp.txt and this means there are 271 symbolic lin
+ks in the same directory as find.
+
+9. 
+Ans:
+-rwxr-xr-x   1 root root   18692 Jan 26  2014 libgpg-error.so.0.10.0
+
+Explanation: I read the man page of ls and get the option -l and -t. Since they
+are both one character long and we can combin these two options into one -lt.
+Since the files begin with - are regular files, I simply got the answer by look
+ing through the output. 
+
+Explanation Command:
+$ man ls
+$ cd /usr/lib
+$ ls -lt
+
+10.
+Ans:
+The locale command get its data from the header <locale.h>
+
+Command:
+$ man locale
+$ man -e 5 locale
+$ man -e 7 locale 
+11.
+
+Ans:
+C -h a sort
+
+Output:
+Buffer-menu-sort              M-x ... RET
+Sort Tabulated List entries by the column at point.
+sort-columns                  M-x ... RET
+Sort lines in region alphabetically by a certain range of columns.
+sort-fields                   M-x ... RET
+Sort lines in region lexicographically by the ARGth field of each
+line.
+sort-lines                    M-x ... RET
+Sort lines in region alphabetically; argument means descending
+order.
+sort-numeric-fields           M-x ... RET
+Sort lines in region numerically by the ARGth field of each line.
+sort-pages                    M-x ... RET
+Sort pages in region alphabetically; argument means descending
+order.
+sort-paragraphs               M-x ... RET
+Sort paragraphs in region alphabetically; argument means descending
+order.
+sort-regexp-fields            M-x ... RET
+Sort the text in the region region lexicographically.
+tabulated-list-col-sort       M-x ... RET
+Sort Tabulated List entries by the column of the mouse click E.
+tabulated-list-sort           M-x ... RET
+Sort Tabulated List entries by the column at point.
+
+12.
+Ans:
+C-M-a : Beginning-of-defun 
+C-M-h : Mark-defun
+
+Command:
+$ emacs
+C-h-b
+C-s
+C-M-a
+
+13.
+Ans:
+C-g: keyboard-quit
+
+Signal a `quit' condition.
+During execution of Lisp code, this character causes a quit directly.
+At top-level, as an editor command. this simply beeps.
+
+14.
+Ans:
+Reinspert ("paste") the last stretch of killed text.
+Command:
+$ emacs
+C-h-b
+C-s
+yank
+Then move the cursor at the beginning of "yank", press enter to go into the des
+cription.
+15.
+Ans:
+
+Comparing to ls -l, dired command also gives the current and parent directory.
+
+Method:
+
+put the output of two commands into two different files and use diff command to
+compare.

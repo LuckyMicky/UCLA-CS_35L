@@ -1,0 +1,27 @@
+--- exer1.html	2017-10-06 20:48:45.627118000 -0700
++++ exer3.html	2017-10-06 22:03:28.775543000 -0700
+@@ -3,13 +3,13 @@
+ 	"http://www.w3.org/TR/html4/strict.dtd">
+ <html>
+ <head>
+-<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>
+-<title>Assignment 1. Getting to know your system</title>
++<meta http-equiv='Content-Type' content='text/html;charset=UTF-ASCII'>
++<title>Assignment 37. Getting to know your system</title>
+ </head>
+ 
+ <body>
+ 
+-<h1>Assignment 1. Getting to know your system</h1>
++<h1>Assignment 37. Getting to know your system</h1>
+ 
+ <p><small>[<a href='../index.html'>35L home</a> &gt; <a href='../assign.html'>assignments</a>]</small></p>
+ 
+@@ -86,6 +86,7 @@
+ When looking at the directory <samp>/usr/bin</samp>, what's the
+ difference between the output of the <samp>ls -l</samp> command,
+ and the directory listing of the Emacs <samp>dired</samp> command?</li>
++
+ </ol>
+ 
+ <h2>Homework: Learning to use Emacs</h2>
