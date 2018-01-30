@@ -1,0 +1,51 @@
+Daxuan Shu
+204853061
+
+CS_35L hw3.txt
+
+Q1: Because case_long_iso_time_style is the goto command. The code to jump to
+this goto command was in ls.c which is deleted by applying the new patch.
+Thus, no code will access to this line and it is safe to delete it.
+
+
+Q2: If the function "dcgettext" does not provide translation, then it will
+return some value without translation to long_time_format[i]. However, the 
+--time-style=long-iso option still works and not everyone understand this 
+commad. Thus, people who don't speak English and don't understand English-form
+at dates can not undertand it.
+
+
+Q3: When I called this script on an empty file like below:
+
+[daxuan@lnxsrv06 ~/Fall2017/CS_35L/Assignment_3]$ ./randline.py /dev/null
+Traceback (most recent call last):
+  File "./randline.py", line 70, in <module>
+    main()
+  File "./randline.py", line 64, in main
+    sys.stdout.write(generator.chooseline())
+  File "./randline.py", line 34, in chooseline
+    return random.choice(self.lines)
+  File "/usr/lib64/python2.7/random.py", line 274, in choice
+    return seq[int(self.random() * len(seq))]  # raises IndexError if seq is 
+empty
+IndexError: list index out of range
+
+There is an index error when calling the function chooseline()
+This is because when we input an empty file as argument, the function will
+choose a line from that empty files and cause an error.
+We can avoid this error by asking another argument to indicate the max line of
+the input file.
+
+
+Q4: When the script is invoked with Python3, the output is shown below:
+daxuan@lnxsrv07 ~/Fall2017/CS_35L/Assignment_3]$ python3 randline.py 
+  File "randline.py", line 65
+    except IOError as (errno, strerror):
+                      ^
+SyntaxError: invalid syntax
+
+This is because in python3, IOError is merged into OSError.
+The output should be:
+
+except OSError as err:
+       parser.error("OS error:{0}".format(err))

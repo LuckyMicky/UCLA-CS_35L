@@ -1,0 +1,183 @@
+CS_35L Fall2017 lab3.txt
+TA: Isha Verma
+Daxuan Shu
+204853061
+
+
+1.Grab Coreutils 7.6
+$ wget ftp://ftp.gnu.org/gnu/coreutils/coreutils-7.6.tar.gz
+
+2.Extract the .tar.gz file 
+$ tar xvzf coreutils-7.6.tar.gz
+
+3.Go into the folder created
+$ cd coreutils-7.6/
+
+4.Read the Install file
+$ emacs Install
+
+ I know that --prefix flag allows me to install to a specific folder rather 
+than the default /usr/bin
+
+5. Configue the code and make it installed to my required directory
+
+I first created a directory called coreutilsInstall in my home directory ~
+$ cd ~
+$ mkdir coreutilsInstall
+Then I got the current path by using pwd
+$ pwd
+Output:
+/u/ee/ugrad/daxuan/coreutilsInstall
+
+
+Then I run the configure command in my coreutils-7.6/ folder 
+
+$ ./configure --prefix=/u/ee/ugrad/daxuan/coreutilsInstall
+
+6. compile the program (also inside coreutils-7.6/ folder)
+
+$ make
+$ make install
+
+7. set the locale parameter LC_ALL to the problmatic en_US.UTF-8
+
+$ export LC_ALL='en_US.UTF-8'
+
+8. Check the bug inside the new created ls command
+
+First, go into the coreutilsInstall directoy that I created under the home 
+directory.
+
+$ cd ~/coreutilsInstall
+
+I want to have a look at what I just created after I run the configure, make 
+and make install commands
+
+$ ls
+
+Output:
+bin  lib  share
+
+Thus there are 3 directories inside the coreutilsInstall directory. The new
+installed ls command should be inside the bin directory.
+
+Then, go to the bin folder and check the problematic ls command
+$ cd bin
+$ ./ls -l /bin/bash
+
+Output:
+-rwxr-xr-x 1 root root 960632 2017-08-03 06:36 /bin/bash
+
+I can see the output format is YYYY-MM-DD instead of the traditional Unix date.
+
+Note: To call the "buggy" ls command inside the directory, use ./ls instead of 
+ls. If I use the default ls command in my /usr/bin directory
+
+$ ls -l /bin/bash
+Output :
+-rwxr-xr-x 1 root root 960632 Aug  3 06:36 /bin/bash
+ 
+9. Create the patch file
+Go to coreutils-7.6/ directory and create the patch file called patch.diff
+
+$ vim patch.diff
+
+and then copied and pasted Brady's patch into it.
+
+Note: using vim instead of emacs for the patch file because emacs might perform
+unnomally by coping the codes from the browser.
+
+Noted that Brady's patch code begin with 
+
+diff --git a/src/ls.c b/src/ls.c
+index 1bb6873..4531b94 100644
+--- a/src/ls.c
++++ b/src/ls.c
+
+since our ls.c source file is located at ./src/ls.c Thus I want to discard the
+first / 
+That is to say I do not want a/ or b/ 
+After reading the man page of patch, I found that the option -pnum strip the 
+smallest prefix containing num leading slashes from each file name found in the
+patch file. 
+Therefore, I will use -p1 option to locate my ls.c file at path ./src/ls.c
+
+10. Apply the patch
+In /coreutils-7.6/ directory, I call the command:
+$ patch -p1 < patch.diff
+
+Output:
+patching file src/ls.c
+Hunk #1 succeeded at 2013 (offset -1 lines).
+Hunk #2 succeeded at 2028 (offset -1 lines).
+
+Thus, I patched successfully.
+I aslo checked the file. It had been changed.
+
+11. Recompile the program
+
+We do not need configure again since there was a "Makefile" when I first called
+configure and the the dependency between packages did not change.
+The details about the machine(lnxsrv) also remained the same.
+
+In the same directory (coreutils-7.6)
+Use make to rebuild the patched ls.c
+
+$ make
+
+We need to make again because the program code had been changed.
+
+we do not need to call "make install" because we want to compare the modified
+ls.c with the ls.c installed in the ~/coreutilsInstall. We do not want to 
+overwrite it.
+
+12. Make sure the change fixes the bug
+
+Go into the /coreutils-7.6/src because we just patched the ls.c file in this 
+directory. Then 
+
+$ ./ls -l /bin/bash 
+
+Output:
+
+-rwxr-xr-x 1 root root 960632 Aug  3 06:36 /bin/bash
+
+It successfully fixes the bug.
+
+Then, go to the installed ls directory
+
+$ cd ~/coreutilsInstall/bin/
+
+$ ./ls -l /bin/bash
+Output:
+-rwxr-xr-x 1 root root 960632 2017-08-03 06:36 /bin/bash
+
+Thus, the installed ls doesn't work.
+
+13. Test on a file that has been recently modified
+
+For a recently modified file:
+
+a. Unmodified version
+$ ~/coreutilsInstall/bin/ls -l coreutils-7.6.tar.g
+-rw-r--r-- 1 daxuan eeugrad 10014650 2017-10-16 14:31 coreutils-7.6.tar.gz
+
+b. Fixed version
+$ ./coreutils-7.6/src/ls -l coreutils-7.6.tar.gz
+-rw-r--r-- 1 daxuan eeugrad 10014650 Oct 16 14:31 coreutils-7.6.tar.gz
+
+For an at least a year-old file:
+
+I touched the coreutils-7.6.tar.gz file:
+
+$ touch -t 9511290000 coreutils-7.6.tar.gz
+
+a. Unmodified version
+$ ~/coreutilsInstall/bin/ls -l coreutils-7.6.tar.gz
+-rw-r--r-- 1 daxuan eeugrad 10014650 1995-11-29 00:00 coreutils-7.6.tar.gz
+
+b. Fixed version
+$ ./coreutils-7.6/src/ls -l coreutils-7.6.tar.gz 
+-rw-r--r-- 1 daxuan eeugrad 10014650 Nov 29  1995 coreutils-7.6.tar.gz
+
+All done :)
